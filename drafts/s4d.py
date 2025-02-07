@@ -63,7 +63,7 @@ if __name__ == "__main__":
     N = 64 ## state
 
     x = torch.randn(L, F) ## L x 1
-    model = S4Conv1D(N, F) ## L x 1
+    model = S4DConv1D(N, F) ## L x 1
 
     y = model(x)
 
