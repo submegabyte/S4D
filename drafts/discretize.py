@@ -29,3 +29,5 @@ class Discretize:
 
         Ad = torch.exp(dA)
         Bd = idA @ (dA - I) @ dB
+
+        return Ad, Bd
