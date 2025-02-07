@@ -21,7 +21,7 @@ class Discretize:
     
     ## DSS paper
     @staticmethod
-    def ZOH(delta, A, B)
+    def ZOH(delta, A, B):
         dA = delta * A
         idA = torch.inverse(dA)
 
