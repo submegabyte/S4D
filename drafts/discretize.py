@@ -22,8 +22,9 @@ class Discretize:
     ## DSS paper
     @staticmethod
     def ZOH(delta, A, B):
+        N = A.shape[0]
         I = torch.eye(N)
-        
+
         dA = delta * A
         idA = torch.inverse(dA)
 
