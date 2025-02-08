@@ -3,25 +3,28 @@ import torch
 from torch import cfloat
 import torch.nn as nn
 
-def hippo(i, j):
-    if i > j:
-        return -(2*i+1)**0.5 * (2*j+1)**0.5
-    return -(i+1) if i == j else 0
+from hippo import *
+from s4d_kernel import *
 
-def hippo_matrix(N):
-    A = torch.empty(N, N)
+# def hippo(i, j):
+#     if i > j:
+#         return -(2*i+1)**0.5 * (2*j+1)**0.5
+#     return -(i+1) if i == j else 0
 
-    for i in range(N):
-        for j in range(N):
-            A[i][j] = hippo(i, j)
+# def hippo_matrix(N):
+#     A = torch.empty(N, N)
 
-    return A
+#     for i in range(N):
+#         for j in range(N):
+#             A[i][j] = hippo(i, j)
 
-def s4d_kernel(delta, A, B, C, L):
-    vandermonde = torch.exp(torch.arange(L)[:,None] * delta * A)
-    K = vandermonde * B * C * (torch.exp(delta * A) - 1) / A ## N x L ???
-    K = torch.sum(K, dim=-1)
-    return K
+#     return A
+
+# def s4d_kernel(delta, A, B, C, L):
+#     vandermonde = torch.exp(torch.arange(L)[:,None] * delta * A)
+#     K = vandermonde * B * C * (torch.exp(delta * A) - 1) / A ## N x L ???
+#     K = torch.sum(K, dim=-1)
+#     return K
 
 ## 1-D input signal
 ## N-D latent state
@@ -31,12 +34,12 @@ class S4DConv1D(nn.Module):
         super().__init__()
 
         ## h'(t) = A h(t) + B x(t)
-        ## y(t) = C* h(t)
+        ##  y(t) = C h(t)
 
         ## parameters
         self.A = nn.Parameter(hippo_matrix(N)).to(cfloat) ## N x N
         self.B = nn.Parameter(torch.randn(N, 1)).to(cfloat) ## N x 1
-        self.C = nn.Parameter(torch.randn(N, 1)).to(cfloat) ## N x 1
+        self.C = nn.Parameter(torch.randn(1, N)).to(cfloat) ## 1 x N
 
         ## scalars
         self.N = N ## state size
